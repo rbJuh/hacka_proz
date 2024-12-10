@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camponesa</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #49039e;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .product-container {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-image {
+            width: 60%; /* Reduz a largura da imagem para 80% da largura do contêiner */
+            height: auto;
+            border-radius: 8px;
+            margin: 0 auto; /* Centraliza a imagem */
+            display: block;
+        }
+
+        .product-info {
+            margin-top: 20px;
+        }
+
+        .product-info h2 {
+            font-size: 24px;
+            color: #040404;
+        }
+
+        .product-info p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #000000;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .buttons button {
+            padding: 10px 20px;
+            margin: 5px;
+            background-color:#49039e;
+            color: rgb(255, 255, 255);
+            border: none;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: background-color 0.3s;
+        }
+
+        .buttons .back-btn {
+            background-color: #49039e;
+        }
+
+        .buttons .buy-btn {
+            background-color: #49039e;
+            color: white;
+        }
+
+        .buttons button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="product-container">
+        <img src="C:\Users\LabInfo\Downloads\491db88a-700d-4881-bc15-c4bce78a87fa.jpg" alt="Produto Exemplo" class="product-image">
+        
+        <div class="product-info">
+            <h2>Camponesa</h2>
+            <p><strong>Categoria:</strong> Vestido de noiva</p>
+            <p><strong>Preço:</strong> R$ 500,00</p>
+            <p><strong>Descrição:</strong></p> 
+            <p>Decote ilusão com tule e apliques florais;</p>
+            <p>Corpete ajustado com renda;</p>
+            <p>Saia volumosa estilo princesa;</p>
+            <p>Detalhes florais;</p>
+            <p>Manguitas estilo ombro a ombro.</p>
+        </div>
+
+        <div class="buttons">
+            <button class="back-btn" onclick="window.history.back()">Voltar</button>
+            <button class="buy-btn" onclick="comprarProduto()">Alugar</button>
+        </div>
+    </div>
+
+    <script>
+        // Função para a ação de "comprar" o produto
+        function comprarProduto() {
+            const produto = {
+                name: 'Camponesa',
+                price: 500.00,
+                quantity: 1
+            };
+
+            // Recupera o carrinho do localStorage ou cria um carrinho vazio
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Adiciona o produto ao carrinho
+            cart.push(produto);
+
+            // Atualiza o carrinho no localStorage
+            localStorage.setItem('cart', JSON.stringify(cart));
+
+            alert('Produto adicionado ao carrinho de compras!');
+            window.location.href = 'carrinho.html'; // Redireciona para a página do carrinho
+        }
+    </script>
+
+</body>
+</html>

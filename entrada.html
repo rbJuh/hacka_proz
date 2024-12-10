@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Estoque</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #fff3e0;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .header {
+      background-color:#6a1b9a;
+      padding: 20px;
+      color: white;
+      font-size: 24px;
+    }
+    .stock-charts {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .stock-chart {
+      width: 30%;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .alerts, .crud-container {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .alert-item {
+      background-color: #fff;
+      padding: 10px;
+      margin: 5px 0;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .buttons {
+      margin-top: 20px;
+    }
+    button {
+      padding: 15px 20px;
+      font-size: 16px;
+      background-color: #49039e;
+      color: white;
+      border: 2px dotted #49039e;  /* Cor e estilo pontilhado */
+      cursor: pointer;
+      border-radius: 20px; /* Borda arredondada */
+    }
+    
+    .input-group {
+      margin-top: 20px;
+    }
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin-right: 10px;
+      border: 2px dotted #49039e;  /* Borda pontilhada */
+      border-radius: 20px;  /* Borda arredondada */
+    }
+    input:focus {
+      outline: none;
+      border-color: #6a1b9a; /* Cor do foco */
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color:#6a1b9a;
+      color: white;
+    }
+    .edit-btn, .delete-btn {
+      padding: 5px 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 30px;
+    }
+    .edit-btn {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 30px;
+    }
+    .delete-btn {
+      background-color: #c21a1a;
+      color: white;
+      border: none;
+      border-radius: 30px;
+    }
+    .cart-container {
+      margin-top: 20px;
+    }
+    .cart-container table {
+      width: 50%;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Controle de Estoque</div>
+
+  <div class="stock-charts">
+    <div class="stock-chart">
+      <canvas id="stockChart" width="150" height="150"></canvas> <!-- Tamanho menor do gráfico -->
+    </div>
+  </div>
+
+  <div class="alerts" id="alerts"></div>
+
+  <!-- CRUD Container -->
+  <div class="crud-container">
+    <h2>Gerenciamento de Itens</h2>
+    <div class="input-group">
+      <input type="text" id="itemName" placeholder="Nome do Item">
+      <input type="number" id="quantity" placeholder="Quantidade">
+      <input type="date" id="returnDate" placeholder="Data de Devolução">
+      <button onclick="addItem()">Adicionar Item</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Nome do Item</th>
+          <th>Quantidade</th>
+          <th>Data de Devolução</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="itemTable"></tbody>
+    </table>
+  </div>
+
+  <div class="buttons">
+    <button onclick="generateReport()">Gerar Relatório</button>
+  </div>
+
+  <script>
+    let stock = JSON.parse(localStorage.getItem('stock')) || [];
+    const alertsElement = document.getElementById('alerts');
+    const stockChartElement = document.getElementById('stockChart').getContext('2d');
+    const itemTable = document.getElementById('itemTable');
+    let stockChart;
+    let editIndex = null;
+
+    function updateLocalStorage() {
+      localStorage.setItem('stock', JSON.stringify(stock));
+    }
+
+    function updateUI() {
+      alertsElement.innerHTML = '';
+      itemTable.innerHTML = '';
+      let stockData = [];
+      let itemLabels = [];
+      let chartColors = [];
+
+      stock.forEach((item, index) => {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Alert for expired items
+        if (item.returnDate <= today) {
+          const alertElement = document.createElement('div');
+          alertElement.classList.add('alert-item');
+          alertElement.innerHTML = `
+            Alerta de Devolução - ${item.name} (Devolução: ${item.returnDate}) 
+            <button onclick="removeItem(${index})">Remover</button>
+          `;
+          alertsElement.appendChild(alertElement);
+        }
+
+        // Populate CRUD table
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.quantity}</td>
+          <td>${item.returnDate}</td>
+          <td>
+            <button class="edit-btn" onclick="editItem(${index})">Editar</button>
+            <button class="delete-btn" onclick="removeItem(${index})">Excluir</button>
+          </td>
+        `;
+        itemTable.appendChild(row);
+
+        stockData.push(item.quantity);
+        itemLabels.push(item.name);
+
+        // Assign random color to each item
+        chartColors.push(randomColor());
+      });
+
+      updateChart(itemLabels, stockData, chartColors);
+    }
+
+    function addItem() {
+      const itemName = document.getElementById('itemName').value;
+      const quantity = parseInt(document.getElementById('quantity').value);
+      const returnDate = document.getElementById('returnDate').value;
+
+      if (itemName === '' || isNaN(quantity) || quantity <= 0 || returnDate === '') return;
+
+      const newItem = { name: itemName, quantity, returnDate };
+
+      if (editIndex === null) {
+        stock.push(newItem);
+      } else {
+        stock[editIndex] = newItem;
+        editIndex = null;
+      }
+
+      updateLocalStorage();
+      updateUI();
+
+      // Clear inputs
+      document.getElementById('itemName').value = '';
+      document.getElementById('quantity').value = '';
+      document.getElementById('returnDate').value = '';
+    }
+
+    function editItem(index) {
+      const item = stock[index];
+      document.getElementById('itemName').value = item.name;
+      document.getElementById('quantity').value = item.quantity;
+      document.getElementById('returnDate').value = item.returnDate;
+      editIndex = index;
+    }
+
+    function removeItem(index) {
+      stock.splice(index, 1);
+      updateLocalStorage();
+      updateUI();
+    }
+
+    function updateChart(labels, data, colors) {
+      if (stockChart) stockChart.destroy(); // Destroy previous chart
+
+      stockChart = new Chart(stockChartElement, {
+        type: 'pie', // Changed to pie chart
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Quantidade em Estoque',
+            data: data,
+            backgroundColor: colors, // Using the random colors
+          }]
+        },
+        options: {
+          responsive: true,
+        }
+      });
+    }
+
+    // Function to generate a random color
+    function randomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    function generateReport() {
+      let report = 'Relatório de Estoque:\n\n';
+      stock.forEach(item => {
+        report += `Item: ${item.name}, Quantidade: ${item.quantity}, Devolução: ${item.returnDate}\n`;
+      });
+      alert(report);
+    }
+
+    // Inicializando a interface
+    updateUI();
+  </script>
+</body>
+</html>

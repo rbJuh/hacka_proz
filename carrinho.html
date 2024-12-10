@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrinho de Compras</title>
+  <style>
+    body {       
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    .header {
+      background-color: #6a1b9a;
+      padding: 20px;
+      color: white;
+      font-size: 24px;
+    }
+    .cart-container {
+      margin-top: 20px;
+    }
+    table {
+      width: 70%;
+      margin: 0 auto;
+      border-collapse: collapse;
+      background-color: white;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #6a1b9a;
+      color: white;
+    }
+    .btn {
+      padding: 10px 15px;
+      background-color: #49039e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #6a1b9a;
+    }
+    .quantity-input {
+      width: 50px;
+      text-align: center;
+    }
+    /* Estilo do botão "Início" */
+    .home-btn {
+      padding: 12px 20px;
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      border-radius: 30px; /* Bordas arredondadas */
+      font-size: 18px;
+      text-decoration: none; /* Remove o sublinhado do link */
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+    .home-btn:hover {
+      background-color: #8e24aa; /* Efeito ao passar o mouse */
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Carrinho de Compras</div><br>
+  
+  <!-- Botão de "Início" com link estilizado -->
+  <a href="areacliente.html" class="home-btn">Início</a>
+
+  <div class="cart-container">
+    <h2>Itens no Carrinho</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Quantidade</th>
+          <th>Preço Unitário</th>
+          <th>Total</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody id="cartTable"></tbody>
+    </table>
+    <div>
+      <button class="btn" onclick="finalizarCompra()">Finalizar Compra</button>
+    </div>
+  </div>
+
+  <script>
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Função para atualizar o carrinho na interface
+    function updateCartUI() {
+      const cartTable = document.getElementById('cartTable');
+      cartTable.innerHTML = '';
+
+      cart.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.name}</td>
+          <td>
+            <input type="number" class="quantity-input" value="${item.quantity}" min="1" onchange="updateQuantity(${index}, this.value)">
+          </td>
+          <td>R$ ${item.price.toFixed(2)}</td>
+          <td>R$ ${(item.price * item.quantity).toFixed(2)}</td>
+          <td><button class="btn" onclick="removeFromCart(${index})">Remover</button></td>
+        `;
+        cartTable.appendChild(row);
+      });
+    }
+
+    // Atualiza a quantidade de um item no carrinho
+    function updateQuantity(index, newQuantity) {
+      if (newQuantity < 1) {
+        newQuantity = 1;
+      }
+
+      cart[index].quantity = parseInt(newQuantity);
+      updateLocalStorage();
+      updateCartUI();
+    }
+
+    // Remove um item do carrinho
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateLocalStorage();
+      updateCartUI();
+    }
+
+    // Atualiza o localStorage com as mudanças no carrinho
+    function updateLocalStorage() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Função para finalizar a compra
+    function finalizarCompra() {
+      if (cart.length === 0) {
+        alert("O carrinho está vazio.");
+        return;
+      }
+
+      let totalCompra = 0;
+      cart.forEach(item => {
+        totalCompra += item.price * item.quantity;
+      });
+
+      alert(`Compra finalizada!\nTotal: R$ ${totalCompra.toFixed(2)}`);
+      // Limpa o carrinho após a compra
+      cart = [];
+      updateLocalStorage();
+      updateCartUI();
+    }
+
+    // Inicializa a interface com os dados do carrinho
+    updateCartUI();
+  </script>
+</body>
+</html>

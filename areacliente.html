@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loja Online</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilos do corpo */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            line-height: 1.6;
+        }
+
+        /* Cabeçalho e banner */
+        header {
+            background-color: #49039e;
+            color: #fff;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+        }
+
+        .banner {
+            width: 100%;
+            height: 250px;
+            background: url('https://images.vexels.com/media/users/3/304023/raw/7bf81201e44d2c94ba4d3c4c413d3598-projeto-de-ilustra-o-do-c-u-da-gal-xia.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .banner h2 {
+            color: white;
+            font-size: 3em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Barra de navegação */
+        nav {
+            background-color: #49039e;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul li {
+            display: inline-block;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        nav ul li a:hover {
+            color: #49039e;
+        }
+
+        /* Produtos */
+        .products-section {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .products-section h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .product-list {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .product-item {
+            background-color: white;
+            width: 200px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px#49039e;
+        }
+
+        .product-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .product-item h3 {
+            margin-top: 15px;
+            font-size: 1.5em;
+            color: #000000;
+        }
+
+        .product-item p {
+            color: #000000;
+        }
+
+        .product-item .price {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #000000;
+        }
+
+        .product-item button {
+            background-color: c;
+            color: white;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            font-size: 1.1em;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .product-item button:hover {
+            background-color: #1b0133;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Cabeçalho -->
+    <header>
+        <h1>Loja Online</h1>
+    </header>
+
+    <!-- Banner -->
+    <section class="banner">
+        <h2>Bem-vindo à Fashion Moon!</h2>
+    </section>
+
+    <!-- Barra de Navegação -->
+    <nav>
+        <ul>
+            <li><a href="carrinho.html">Carrinho</a></li>
+            <li><a href="chatbot.html">Ajuda</a></li>
+        </ul>
+    </nav>
+
+    <!-- Seção de Produtos -->
+    <section class="products-section">
+        <h2>Produtos em Destaque</h2>
+        <div class="product-list">
+            <div class="product-item">
+                <img src="C:\Users\LabInfo\Downloads\491db88a-700d-4881-bc15-c4bce78a87fa.jpg" alt="Produto 1">
+                <h3>Camponesa</h3>
+                <p> O vestido de noiva perfeito para quem se inspira na primavera.</p>
+                <p class="price">R$ 500,00</p>
+                <button onclick="p1()">Alugar</button>
+            </div>
+            <div class="product-item">
+                <img src="img/cf4f34f6-454d-44e8-971d-b54d8e2b3ae4.webp" alt="Produto 2">
+                <h3>Produto 2</h3>
+                <p>O vestido ideal para estar no tapete vermelho.</p>
+                <p class="price">R$ 1.000,00</p>
+                <button onclick="p2()">Alugar</button>
+            </div>
+            <div class="product-item">
+                <img src="C:\Users\LabInfo\Downloads\Lumiere-251-e1725108890891.jpg" alt="Produto 3">
+                <h3>Classic</h3>
+                <p>Quer elegância e sofisticação? Aqui está um vestido clássico com detalhes contemporâneos para você.</p>
+                <p class="price">R$ 300,00</p>
+                <button onclick="p3()">Alugar</button>
+            </div>
+        </div>
+    </section>
+    <script src="script.js"></script>
+</body>
+</html>
